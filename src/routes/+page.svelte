@@ -26,8 +26,9 @@
   let cookies = cookiesToArr();
   let tasks = getCookie('tasks') ? JSON.parse(getCookie('tasks')) : [];
   const addTask = function (e) {
+    console.log(e);
     e.target.classList.add('button_create-task-click');
-    if (e.code === 'Enter' || !e.code) {
+    if (e.inputType === 'insertParagraph' || !e.inputType) {
       e.preventDefault();
       tasks = [...tasks, { i: tasks.length, text: inputText, done: false }];
       writeCookie('tasks', JSON.stringify(tasks), 30 * 24 * 3600);
@@ -76,7 +77,7 @@
         type="text"
         spellcheck="false"
         bind:textContent={inputText}
-        on:keydown={addTask}
+        on:beforeinput={addTask}
       ></span>
       <button class="button_create-task" on:click={addTask}
         ><i class="fa-regular fa-square-plus"></i></button
