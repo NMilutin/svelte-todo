@@ -25,23 +25,22 @@
   };
   let cookies = cookiesToArr();
   let tasks = getCookie('tasks') ? JSON.parse(getCookie('tasks')) : [];
+  if (document.cookie) cookies = cookiesToArr();
+  writeCookie('mode', getCookie('mode') || 'light', 30 * 24 * 3600);
+  let mode = getCookie('mode');
+
   const addTask = function (e) {
-    console.log(e);
     e.target.classList.add('button_create-task-click');
     if (e.inputType === 'insertParagraph' || !e.inputType) {
       e.preventDefault();
       tasks = [...tasks, { i: tasks.length, text: inputText, done: false }];
       writeCookie('tasks', JSON.stringify(tasks), 30 * 24 * 3600);
       inputText = '';
+      setTimeout(() => {
+        e.target.classList.remove('button_create-task-click');
+      }, 250);
     }
-    setTimeout(
-      () => e.target.classList.remove('button_create-task-click'),
-      250,
-    );
   };
-  if (document.cookie) cookies = cookiesToArr();
-  writeCookie('mode', getCookie('mode') || 'light', 30 * 24 * 3600);
-  let mode = getCookie('mode');
   const doTask = function (i) {
     tasks[i].done = !tasks[i].done;
     writeCookie('tasks', JSON.stringify(tasks), 30 * 24 * 3600);
@@ -69,7 +68,6 @@
   <ul class="list_tasks">
     <h1 class="title">Svelte To-Do list</h1>
     <li class="item_new-task">
-      <!-- svelte-ignore a11y-interactive-supports-focus -->
       <span
         contenteditable
         role="textbox"
@@ -102,9 +100,9 @@
   </ul>
 
   <button
-    class="color-mode_button {mode}"
-    on:click={() => {
-      writeCookie('mode', mode === 'light' ? 'dark' : 'light');
+    class="color-mode_button"
+    on:click={e => {
+      writeCookie('mode', mode === 'light' ? 'dark' : 'light', 30 * 24 * 3600);
       mode = getCookie('mode');
     }}><i class="fa-solid fa-{mode === 'light' ? 'sun' : 'moon'}"></i></button
   >
@@ -119,6 +117,10 @@
     align-items: center;
     font-family: monospace;
     margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 8px;
+    box-sizing: border-box;
   }
   .title {
     text-align: center;
@@ -213,7 +215,9 @@
       padding: 0;
     }
   }
-  :global(body):has(.light),
+  :global(body) {
+    margin: 0;
+  }
   .light,
   .light *,
   .light i::before,
@@ -225,7 +229,6 @@
       color 0.25s linear,
       background-color 0.25s linear;
   }
-  :global(body):has(.dark),
   .dark,
   .dark *,
   .dark i::before,
