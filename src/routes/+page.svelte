@@ -108,7 +108,7 @@
   >
 </div>
 
-<!-- TODO Edit, Dark Mode Toggle -->
+<!-- TODO Edit, Safari -->
 
 <style>
   .container_app {
